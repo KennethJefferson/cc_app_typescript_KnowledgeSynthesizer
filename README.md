@@ -94,21 +94,30 @@ __ccg_KnowledgeSynthesizer/
 
 ## Output Structure
 
-After processing, course directories contain:
+After processing, course directories contain skill-specific output:
 
 ```
 My Course/
 └── CODE/
-    ├── __cc_validated_files/     # Extracted text content
-    ├── __ccg_SOP/                # Generated SOPs
+    ├── __ccg_SOP/                # SOP skill output
     │   ├── README.md
     │   ├── procedures/
     │   │   ├── SOP-001_*.md
     │   │   └── ...
     │   ├── quick_reference.md
     │   └── glossary.md
+    ├── __ccg_Summary/            # Summary skill output
+    │   ├── README.md
+    │   ├── topics/
+    │   │   ├── topic_01_*.md
+    │   │   └── ...
+    │   ├── glossary.md
+    │   ├── quick_reference.md
+    │   └── study_guide.md
     └── __cc_processing_log/      # Run logs
 ```
+
+Each ccg-* skill defines its own output structure via its SKILL.md file.
 
 ## Documentation
 

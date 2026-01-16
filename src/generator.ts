@@ -74,36 +74,19 @@ export async function runGenerator(config: GeneratorConfig): Promise<GeneratorRe
     const contentPrompt = buildContentPrompt(assets);
 
     // Build the full prompt for Claude CLI
-    const fullPrompt = `You are a content generator. Your task is to create documentation files based on skill instructions.
+    // The SKILL.md content drives the generation format - no hardcoded instructions
+    const fullPrompt = `${skillContent}
 
-## Skill Instructions
+## Generation Context
 
-${skillContent}
+**Course Name:** ${courseName}
+**Output Directory:** ${outputDir}
 
-## Task
-
-Generate documentation for the course: "${courseName}"
-
-Write all generated files to this directory: ${outputDir}
-
-Create the following files:
-- README.md (index of all procedures with links)
-- procedures/SOP-001_[name].md, SOP-002_[name].md, etc. (one per procedure identified)
-- quick_reference.md (condensed checklist)
-- glossary.md (terms and definitions)
+Write all generated files to the output directory above using the Write tool.
 
 ## Source Content
 
-${contentPrompt}
-
-## Instructions
-
-1. Analyze the source content for procedural information
-2. Create comprehensive SOP documents following the format in the skill instructions
-3. Write each file using the Write tool to: ${outputDir}
-4. Create the procedures/ subdirectory as needed
-
-Start by creating README.md, then the procedure files, then quick_reference.md and glossary.md.`;
+${contentPrompt}`;
 
     // Write prompt to temp file
     const tempPromptFile = path.join(outputDir, "..", "_temp_prompt.txt");

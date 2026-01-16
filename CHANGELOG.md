@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.2.1] - 2026-01-16
+
+### Fixed
+
+- **SKILL.md-Driven Generation**: Removed hardcoded SOP prompt from `generator.ts` that was overriding skill-specific output formats
+- **Summary Skill Output**: Summary skill now correctly generates `topics/` directory with `topic_XX_*.md` files instead of `procedures/SOP-*` files
+- Each ccg-* skill's SKILL.md now fully controls the generation format, output structure, and file naming
+
+### Changed
+
+- **generator.ts**: Simplified prompt construction - SKILL.md content is now the primary prompt with minimal metadata (course name, output directory, source content)
+- **Documentation**: Updated CLAUDE.md, README.md, and Usage.md to reflect skill-specific output structures
+
+---
+
 ## [3.2.0] - 2026-01-15
 
 ### Changed
@@ -86,6 +101,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 | Version | Date | Summary |
 |---------|------|---------|
+| 3.2.1 | 2026-01-16 | Fixed SKILL.md-driven generation - skills control output format |
 | 3.2.0 | 2026-01-15 | Simplified pipeline - removed extraction phase |
 | 3.1.0 | 2026-01-15 | Content generation via Claude Agent SDK |
 | 3.0.0 | 2026-01-15 | Initial v3 release with extraction pipeline |

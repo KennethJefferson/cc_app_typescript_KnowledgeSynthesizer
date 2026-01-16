@@ -136,16 +136,32 @@ After extraction, validated text content is saved to:
 
 ### Generated Content
 
-After generation, synthesized content is saved to:
+After generation, synthesized content is saved to `<course>/CODE/__ccg_<type>/`. The structure depends on the skill used:
+
+**SOP Skill (`--ccg SOP`):**
 ```
-<course>/CODE/__ccg_<type>/
-├── README.md           # Index of all generated content
-├── procedures/         # Individual procedure files (for SOPs)
+__ccg_SOP/
+├── README.md           # Index of all procedures
+├── procedures/         # Individual procedure files
 │   ├── SOP-001_*.md
 │   └── ...
 ├── quick_reference.md  # Condensed checklists
 └── glossary.md         # Terms and definitions
 ```
+
+**Summary Skill (`--ccg Summary`):**
+```
+__ccg_Summary/
+├── README.md           # Course overview and navigation
+├── topics/             # Individual topic summaries
+│   ├── topic_01_*.md
+│   └── ...
+├── glossary.md         # Key terms and definitions
+├── quick_reference.md  # Condensed reference guide
+└── study_guide.md      # Combined study material
+```
+
+Each skill's SKILL.md defines its output structure.
 
 ### Processing Logs
 

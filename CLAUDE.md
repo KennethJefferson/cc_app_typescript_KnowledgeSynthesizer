@@ -59,10 +59,17 @@ bun run src/cli.ts --list
 - Logs: `<course>/CODE/__cc_processing_log/`
 
 ### Content Generation
-The `generator.ts` module invokes Claude CLI with:
+The `generator.ts` module invokes Claude CLI with the skill's SKILL.md as the prompt:
 ```bash
 claude --dangerously-skip-permissions --allowedTools "Write,Glob,Read" --max-turns 50 < prompt
 ```
+
+**Important**: The SKILL.md content drives the entire generation format. The generator only adds:
+- Course name
+- Output directory path
+- Source content from fileassets.txt
+
+Each skill defines its own output structure (e.g., `topics/` for Summary, `procedures/` for SOP).
 
 ## Testing
 
