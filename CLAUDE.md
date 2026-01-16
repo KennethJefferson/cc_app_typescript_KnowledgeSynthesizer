@@ -2,13 +2,14 @@
 
 ## Overview
 
-KnowledgeSynthesizer v3 is a CLI application using Bun/TypeScript that synthesizes AI-generated content from course materials using the Claude Agent SDK.
+KnowledgeSynthesizer v3 is a CLI application using Bun/TypeScript that synthesizes AI-generated content from course materials via Claude CLI.
 
 ## Architecture
 
-Two-phase processing pipeline:
-1. **Extraction Phase**: Worker pool processes course files via subagents to `__cc_validated_files/`
-2. **Generation Phase**: Claude CLI generates content based on ccg-* skill SKILL.md prompts
+Single-phase generation pipeline:
+1. Parse `fileassets.txt` (directory listing + file contents)
+2. Build prompt from ccg-* skill's SKILL.md + course content
+3. Invoke Claude CLI to generate output files
 
 ## Key Files
 
@@ -17,21 +18,23 @@ Two-phase processing pipeline:
 | `src/cli.ts` | Entry point, argument parsing |
 | `src/worker.ts` | Worker pool orchestration |
 | `src/generator.ts` | Content generation via Claude CLI |
-| `src/processor.ts` | File processing and routing |
 | `src/parser.ts` | fileassets.txt parsing |
-| `src/skill.ts` | Skill validation and loading |
+| `src/skill.ts` | Skill validation and discovery |
 | `src/tui.ts` | Terminal UI with progress bars |
 | `src/logger.ts` | Logging utilities |
+| `src/types.ts` | TypeScript interfaces |
 
 ## Skills Directory Structure
 
 ```
 skills/
-├── ccg-sop-generator/     # Content synthesis skills (ccg-*)
+├── ccg-sop-generator/       # Content synthesis (active)
 ├── ccg-summary-generator/
-├── extractor-*/           # Document extraction skills
-├── db-extractor-*/        # Database extraction skills
-└── file-identifier/       # File type routing
+├── ccg-project-*/
+├── ccg-github-sync/
+├── extractor-*/             # Reserved for future use
+├── db-extractor-*/
+└── file-identifier/
 ```
 
 ## Running the Application
@@ -51,11 +54,10 @@ bun run src/cli.ts --list
 
 ### Skill Naming
 - Content generators: `ccg-<name>` (e.g., `ccg-sop-generator`)
-- Extractors: `extractor-<type>` or `db-extractor-<type>`
+- Extractors: `extractor-<type>` or `db-extractor-<type>` (reserved)
 
 ### Output Directories
-- Validated files: `<course>/CODE/__cc_validated_files/`
-- Generated content: `<course>/CODE/__ccg_<type>/`
+- Generated content: `<course>/CODE/__ccg_<type>/` (e.g., `__ccg_SOP/`)
 - Logs: `<course>/CODE/__cc_processing_log/`
 
 ### Content Generation
@@ -67,13 +69,13 @@ claude --dangerously-skip-permissions --allowedTools "Write,Glob,Read" --max-tur
 **Important**: The SKILL.md content drives the entire generation format. The generator only adds:
 - Course name
 - Output directory path
-- Source content from fileassets.txt
+- Source content from fileassets.txt (150K char limit, binary files skipped)
 
 Each skill defines its own output structure (e.g., `topics/` for Summary, `procedures/` for SOP).
 
 ## Testing
 
-Test course materials are in `__test-courses/`. Run extraction and generation:
+Test course materials are in `__test-courses/`. Run generation:
 ```bash
 bun run src/cli.ts -i "./__test-courses/OpenAPI (Swagger); Designing & Documenting Rest APIs" --ccg SOP
 ```
@@ -83,3 +85,4 @@ bun run src/cli.ts -i "./__test-courses/OpenAPI (Swagger); Designing & Documenti
 - Uses `@opentui/core` for terminal UI
 - Bun shell (`$`) for subprocess execution
 - No direct Anthropic API calls - uses Claude CLI OAuth authentication
+- Binary files (.mp4, .zip, .exe, etc.) are skipped, not extracted
